@@ -8,6 +8,7 @@ import com.example.demo.service.CarService;
 import com.example.demo.service.dto.CarDto;
 import com.example.demo.service.dto.CarResponseDto;
 import com.example.demo.service.dto.CarUpdateDto;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,12 +34,14 @@ public class CarController {
     private final CategoryRepository categoryRepository;
 
 
+    @Operation(summary = "자동차 등록")
     @PostMapping
     public ResponseEntity<CarDto> create(@Valid @RequestBody CarDto carDto) {
         CarDto car = carService.saveCar(carDto);
         return ResponseEntity.ok(car);
     }
 
+    @Operation(summary = "자동차 수정")
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateCar(@PathVariable Long id,
                                             @Valid @RequestBody CarUpdateDto carUpdateDto) {
@@ -46,6 +49,7 @@ public class CarController {
         return ResponseEntity.ok("Car updated successfully");
     }
 
+    @Operation(summary = "자동차 대여 가능 여부 조회")
     @GetMapping("/{id}/availability")
     public ResponseEntity<Map<String, Boolean>> checkCarAvailability(@PathVariable Long id) {
         Car car = carRepository.findById(id)
@@ -56,6 +60,7 @@ public class CarController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "자동차 카테고리 별 조회")
     @GetMapping("/category/{categoryName}")
     public ResponseEntity<List<CarResponseDto>> getCarsByCategory(@PathVariable String categoryName) {
         categoryRepository.findByName(categoryName)
@@ -64,6 +69,7 @@ public class CarController {
         return ResponseEntity.ok(cars);
     }
 
+    @Operation(summary = "자동차 제조사,모델명,생산년도 조회")
     @GetMapping("/search")
     public ResponseEntity<List<CarResponseDto>> getCarsWithDetails(
             @RequestParam(required = false) String manufacturer,
